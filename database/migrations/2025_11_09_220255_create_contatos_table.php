@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contatos', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('cliente_id');
+            $table->string('nome_completo');
+
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
             $table->timestamps();
         });
     }
