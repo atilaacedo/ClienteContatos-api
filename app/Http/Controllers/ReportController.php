@@ -18,6 +18,6 @@ class ReportController extends Controller
             'page' => 'sometimes|integer|min:1'
         ]);
         $clientes = $this->reportService->getClientesWithContatos($queryParams);
-        return response()->json(ClienteResource::collection($clientes));
+        return ClienteResource::collection($clientes);
     }
 }
