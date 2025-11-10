@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreClienteRequest;
+use App\Http\Requests\UpdateClienteRequest;
+use App\Http\Resources\ClienteResource;
 use App\Models\Cliente;
 use App\Services\ClienteService;
 use Illuminate\Http\Request;
@@ -17,7 +19,9 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        
+        $clientes = $this->clienteService->getAll();
+
+        return ClienteResource::collection($clientes);
     }
 
     /**
@@ -35,15 +39,18 @@ class ClienteController extends Controller
      */
     public function show(Cliente $cliente)
     {
-        //
+        $cliente->load('telefones', 'emails');
+        return new ClienteResource($cliente);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cliente $cliente)
+    public function update(UpdateClienteRequest $request, Cliente $cliente)
     {
-        //
+        $data = $request->validated();
+        $updatedCliente = $this->clienteService->update($cliente, $data);
+        return new ClienteResource($updatedCliente);
     }
 
     /**
@@ -51,6 +58,7 @@ class ClienteController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
-        //
+        $this->clienteService->delete($cliente);
+        return response()->noContent();
     }
 }

@@ -1,25 +1,27 @@
-<?php 
+<?php
 
 namespace App\Services;
 
 use App\Models\Cliente;
 use Illuminate\Support\Facades\DB;
 
-class ClienteService {
+class ClienteService
+{
 
 
-    public function createCliente(array $data) {
-        try{
+    public function createCliente(array $data)
+    {
+        try {
             DB::beginTransaction();
 
-            $dataCliente = array_filter($data, function($key) {
+            $dataCliente = array_filter($data, function ($key) {
                 return in_array($key, ['nome_completo']);
             }, ARRAY_FILTER_USE_KEY);
 
             $cliente = Cliente::create($dataCliente);
 
-            if(isset($data['telefones']) && is_array($data['telefones'])) {
-                foreach($data['telefones'] as $telefone) {
+            if (isset($data['telefones']) && is_array($data['telefones'])) {
+                foreach ($data['telefones'] as $telefone) {
                     $cliente->telefones()->create([
                         'numero' => $telefone,
                         'telefoneable_id' => $cliente['id'],
@@ -28,8 +30,8 @@ class ClienteService {
                 }
             }
 
-            if(isset($data['emails']) && is_array($data['emails'])) {
-                foreach($data['emails'] as $email) {
+            if (isset($data['emails']) && is_array($data['emails'])) {
+                foreach ($data['emails'] as $email) {
                     $cliente->emails()->create([
                         'email' => $email,
                         'emailable_id' => $cliente['id'],
@@ -42,54 +44,41 @@ class ClienteService {
             DB::commit();
 
             return $cliente->load('telefones', 'emails');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             throw new \Exception("Erro ao cadastrar cliente: " . $e->getMessage());
-        }       
+        }
     }
 
-    public function getAll() {
+    public function getAll()
+    {
         $cliente = Cliente::with('telefones', 'emails')->get();
 
         return $cliente;
     }
-
-    public function getById($id) {
-        $cliente = Cliente::with('telefones', 'emails')->findOrFail($id);
-        return $cliente;
-    }
-
-    public function update(Cliente $cliente, array $data) {
-        try{
-            DB::beginTransaction();
-
-            $dataCliente = array_filter($data, function($key) {
-                return in_array($key, ['nome_completo']);
-            }, ARRAY_FILTER_USE_KEY);
-
-            $cliente->update($dataCliente);
-
-            DB::commit();
+    public function update(Cliente $cliente, array $data)
+    {
+        try {
+            $cliente->update($data);
 
             return $cliente;
-        }catch(\Exception $e){
-            DB::rollBack();
+        } catch (\Exception $e) {
             throw new \Exception("Erro ao atualizar cliente: " . $e->getMessage());
-        }       
+        }
     }
 
-    public function delete(Cliente $cliente) {
-        try{
+    public function delete(Cliente $cliente)
+    {
+        try {
             DB::beginTransaction();
-
+            $cliente->telefones()->delete();
+            $cliente->emails()->delete();
             $cliente->delete();
 
             DB::commit();
-
-            return true;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             throw new \Exception("Erro ao deletar cliente: " . $e->getMessage());
-        }       
+        }
     }
 }
