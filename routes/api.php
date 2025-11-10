@@ -10,4 +10,5 @@ include $folder . "/Cliente" . $suffix;
 include $folder . "/Email" . $suffix;
 include $folder . "/Telefone" . $suffix;
 include $folder . "/Contato" . $suffix;
+include $folder . "/Report" . $suffix;
 

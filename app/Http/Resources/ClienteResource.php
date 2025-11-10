@@ -19,7 +19,8 @@ class ClienteResource extends JsonResource
             'nome_completo' => $this->nome_completo,
             'emails'        => $this->whenLoaded('emails', $this->emails->pluck('email')),
             'telefones'     => $this->whenLoaded('telefones', $this->telefones->pluck('numero')),
-            'data_registro' => $this->created_at->toDateTimeString()
+            'data_registro' => $this->created_at->toDateTimeString(),
+            'contatos' => $this->whenLoaded('contatos', ContatoResource::collection($this->contatos)),
         ];
     }
 }
