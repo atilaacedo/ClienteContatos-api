@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ClienteResource extends JsonResource
+class ContatoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +19,6 @@ class ClienteResource extends JsonResource
             'nome_completo' => $this->nome_completo,
             'emails'        => $this->whenLoaded('emails', $this->emails->pluck('email')),
             'telefones'     => $this->whenLoaded('telefones', $this->telefones->pluck('numero')),
-            'data_registro' => $this->created_at->toDateTimeString()
         ];
     }
 }
