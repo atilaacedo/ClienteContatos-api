@@ -23,7 +23,7 @@ class StoreContatoRequest extends FormRequest
     {
         return [
             'nome_completo' => 'required|string|max:255',
-            'cliente_id'    => 'required|integer|exists:clientes,id',
+            'cliente_id'    => 'required|string|exists:clientes,id',
             'emails'        => 'nullable|array',
             'emails.*'      => 'required|email|distinct',
             'telefones'     => 'nullable|array',
