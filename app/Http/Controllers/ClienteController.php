@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreClienteRequest;
+use App\Http\Requests\StoreEmailRequest;
+use App\Http\Requests\StoreTelefoneRequest;
 use App\Http\Requests\UpdateClienteRequest;
 use App\Http\Resources\ClienteResource;
 use App\Models\Cliente;
@@ -60,5 +62,19 @@ class ClienteController extends Controller
     {
         $this->clienteService->delete($cliente);
         return response()->noContent();
+    }
+
+    public function attachEmail(StoreEmailRequest $request, Cliente $cliente)
+    {
+        $email = $cliente->emails()->create($request->validated());
+        
+        return response()->json($email, 201); 
+    }
+
+    public function attachTelefone(StoreTelefoneRequest $request, Cliente $cliente)
+    {
+        $telefone = $cliente->telefones()->create($request->validated());
+        
+        return response()->json($telefone, 201); 
     }
 }

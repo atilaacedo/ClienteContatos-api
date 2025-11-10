@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContatoRequest;
+use App\Http\Requests\StoreEmailRequest;
+use App\Http\Requests\StoreTelefoneRequest;
 use App\Http\Requests\UpdateContatoRequest;
 use App\Http\Resources\ContatoResource;
 use App\Models\Contato;
@@ -12,7 +14,7 @@ use Illuminate\Http\Request;
 class ContatoController extends Controller
 {
 
-    public function __construct(private ContatoService $contatoService){}
+    public function __construct(private ContatoService $contatoService) {}
     /**
      * Display a listing of the resource.
      */
@@ -26,7 +28,7 @@ class ContatoController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreContatoRequest $request)
-    {   
+    {
         $data = $request->validated();
         $contato = $this->contatoService->createContato($data);
 
@@ -61,5 +63,19 @@ class ContatoController extends Controller
         $this->contatoService->deleteContato($contato);
 
         return response()->noContent();
+    }
+
+    public function attachEmail(StoreEmailRequest $request, Contato $contato)
+    {
+        $email = $contato->emails()->create($request->validated());
+
+        return response()->json($email, 201);
+    }
+
+    public function attachTelefone(StoreTelefoneRequest $request, Contato $contato)
+    {
+        $telefone = $contato->telefones()->create($request->validated());
+
+        return response()->json($telefone, 201);
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('contatos', ContatoController::class);
 
-Route::prefix('contatos/{contato}')->group(function () {
-    Route::post('telefones', [ContatoTelefoneController::class, 'store']);
-    ROute::post('emails', [ContatoTelefoneController::class, 'storeEmail']);
+Route::prefix('contatos/{contato}')->controller(ContatoController::class)->group(function () {
+    Route::post('telefones', 'attachTelefone');
+    ROute::post('emails', 'attachEmail');
 });
