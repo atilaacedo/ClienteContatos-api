@@ -7,4 +7,7 @@ $suffix = "Route.php";
 
 
 include $folder . "/Cliente" . $suffix;
+include $folder . "/Email" . $suffix;
+include $folder . "/Telefone" . $suffix;
+include $folder . "/Contato" . $suffix;
 

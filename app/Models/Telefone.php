@@ -12,8 +12,8 @@ class Telefone extends Model
 
     protected $fillable = [
         'numero',
-        'telefoneable_id',
-        'telefoneable_type',
+        'telefonable_id',
+        'telefonable_type',
     ];
 
 

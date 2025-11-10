@@ -31,7 +31,7 @@ class ClienteController extends Controller
     {
         $data = $request->validated();
         $cliente = $this->clienteService->createCliente($data);
-        return response()->json($cliente, 201);
+        return response()->json(new ClienteResource($cliente), 201);
     }
 
     /**
