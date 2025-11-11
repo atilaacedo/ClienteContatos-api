@@ -20,4 +20,11 @@ class ReportController extends Controller
         $clientes = $this->reportService->getClientesWithContatos($queryParams);
         return ClienteResource::collection($clientes);
     }
+
+    public function gerarPdf()
+    {
+        $pdf = $this->reportService->gerarPdf();
+
+        return $pdf->stream('relatorio_clientes_contatos.pdf');
+    }
 }
