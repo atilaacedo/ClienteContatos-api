@@ -24,6 +24,8 @@ class UpdateContatoRequest extends FormRequest
         return [
             'nome_completo' => 'sometimes|required|string|max:255',
             'cliente_id' => 'sometimes|required|exists:clientes,id',
+            'emails' => 'sometimes|array',
+            'telefones' => 'sometimes|array',
         ];
     }
 
@@ -36,6 +38,8 @@ class UpdateContatoRequest extends FormRequest
             'nome_completo.max' => 'O campo nome completo não pode exceder 255 caracteres.',
             'cliente_id.required' => 'O campo cliente_id é obrigatório.',
             'cliente_id.exists' => 'O cliente_id fornecido não existe na tabela de clientes.',
+            'emails.array' => 'O campo emails deve ser um array.',
+            'telefones.array' => 'O campo telefones deve ser um array.',
         ];
     }
 }

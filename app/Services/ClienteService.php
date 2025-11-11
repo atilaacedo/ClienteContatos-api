@@ -59,10 +59,34 @@ class ClienteService
     public function update(Cliente $cliente, array $data)
     {
         try {
+            DB::beginTransaction();
             $cliente->update($data);
 
+            if (isset($data['telefones']) && is_array($data['telefones'])) {
+                $cliente->telefones()->delete();
+                foreach ($data['telefones'] as $telefone) {
+                    $cliente->telefones()->create([
+                        'numero' => $telefone,
+                        'telefoneable_id' => $cliente['id'],
+                        'telefoneable_type' => Cliente::class,
+                    ]);
+                }
+            }
+
+            if (isset($data['emails']) && is_array($data['emails'])) {
+                $cliente->emails()->delete();
+                foreach ($data['emails'] as $email) {
+                    $cliente->emails()->create([
+                        'email' => $email,
+                        'emailable_id' => $cliente['id'],
+                        'emailable_type' => Cliente::class,
+                    ]);
+                }
+            }
+            DB::commit();
             return $cliente;
         } catch (\Exception $e) {
+            DB::rollBack();
             throw new \Exception("Erro ao atualizar cliente: " . $e->getMessage());
         }
     }

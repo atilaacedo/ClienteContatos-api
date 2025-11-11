@@ -23,6 +23,8 @@ class UpdateClienteRequest extends FormRequest
     {
         return [
             'nome_completo' => 'sometimes|required|string|max:255',
+            'emails' => 'sometimes|array',
+            'telefones' => 'sometimes|array',
         ];
     }
 }

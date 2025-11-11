@@ -9,8 +9,9 @@ class ContatoService
 {
 
 
-    public function createContato(array $data) {
-        try{
+    public function createContato(array $data)
+    {
+        try {
             DB::beginTransaction();
 
             $dataContato = array_filter($data, function ($key) {
@@ -43,45 +44,71 @@ class ContatoService
             DB::commit();
 
             return $contato->load('telefones', 'emails');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception("Erro ao cadastrar contato: " . $e->getMessage());
         }
     }
 
-    public function getAllContatos(){
+    public function getAllContatos()
+    {
         $contatos = Contato::with('telefones', 'emails', 'cliente')->get();
         return $contatos;
     }
-    public function getContato(Contato $contato){
+    public function getContato(Contato $contato)
+    {
         return $contato->load('telefones', 'emails', 'cliente');
-
     }
-    public function getById(string $id){
+    public function getById(string $id)
+    {
         $contato = Contato::with('telefones', 'emails')->findOrFail($id);
         return $contato;
     }
 
     public function updateContato(Contato $contato, array $data)
     {
-        try{
+        try {
+            DB::beginTransaction();
             $contato->update($data);
 
+            if (isset($data['telefones']) && is_array($data['telefones'])) {
+                $contato->telefones()->delete();
+                foreach ($data['telefones'] as $telefone) {
+                    $contato->telefones()->create([
+                        'numero' => $telefone,
+                        'telefoneable_id' => $contato['id'],
+                        'telefoneable_type' => Contato::class,
+                    ]);
+                }
+            }
+
+            if (isset($data['emails']) && is_array($data['emails'])) {
+                $contato->emails()->delete();
+                foreach ($data['emails'] as $email) {
+                    $contato->emails()->create([
+                        'email' => $email,
+                        'emailable_id' => $contato['id'],
+                        'emailable_type' => Contato::class,
+                    ]);
+                }
+            }
+            DB::commit();
             return $contato;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
+            DB::rollBack();
             throw new \Exception("Erro ao atualizar contato: " . $e->getMessage());
         }
     }
 
     public function deleteContato(Contato $contato)
     {
-        try{
+        try {
             $contato->telefones()->delete();
             $contato->emails()->delete();
             $contato->delete();
 
             return true;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             throw new \Exception("Erro ao deletar contato: " . $e->getMessage());
         }
     }
